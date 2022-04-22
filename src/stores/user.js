@@ -23,7 +23,8 @@ export const useUserStore = defineStore('useStore', {
                 console.log('desde registerUser')
                 console.log(this.userData)
             } catch (error) {
-                console.log(error)
+                console.log(error.code)
+                return error.code
             } finally {
                 this.loadingUser = false
             }
@@ -39,7 +40,9 @@ export const useUserStore = defineStore('useStore', {
                 console.log(this.userData)
             } catch (error) {
                 console.log('error en Login')
-                console.log(error)
+                console.log(error.code)
+                return error.code
+
             } finally {
                 this.loadingUser = false
             }

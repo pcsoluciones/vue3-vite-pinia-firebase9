@@ -7,7 +7,8 @@ import router from "../router"
 export const useDatabaseStore = defineStore('database', {
     state: () => ({
         documents: [],
-        loadingDoc: false
+        loadingDoc: false,
+        loading: false
     }),
 
     actions: {
@@ -40,6 +41,7 @@ export const useDatabaseStore = defineStore('database', {
         },
 
         async addUrl(nameUrl) {
+            this.loading = true
             try {
               const objetoDoc = {
                   name : nameUrl,
@@ -56,7 +58,10 @@ export const useDatabaseStore = defineStore('database', {
               })
             } 
             catch (error) {
-                console.log(error)
+                console.log(error.code)
+                return error.code
+            } finally {
+                this.loading = false
             }
         },
 
@@ -85,6 +90,8 @@ export const useDatabaseStore = defineStore('database', {
 
 
         async updateUrl(id, nameUrl) {
+            this.loading = true
+
             try {
                 const docRef = doc(db, "urls", id)  //referencia del documento de firestore
 
@@ -106,18 +113,14 @@ export const useDatabaseStore = defineStore('database', {
 
             } catch (error) {
                 console.log(error.message)
-
+                return error.message
             }   finally {
-
+                this.loading = false
             }
-
-
-
         },
 
-
-
         async deleteUrl(id){
+            this.loading = true
             try {
                 const docRef = doc(db, "urls", id)  //referencia del documento de firestore
 
@@ -134,9 +137,10 @@ export const useDatabaseStore = defineStore('database', {
                 this.documents = this.documents.filter(
                     item => item.id != id)                  // eliminamos ese registro del vuex
             } catch (error) {
-                console.log(error.message)
+                //console.log(error.code)
+                return error.message
             }   finally {
-
+                    this.loading = false
             }
         }
     }
